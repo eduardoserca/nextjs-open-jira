@@ -8,17 +8,21 @@ import '@fontsource/roboto/700.css';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { ligthTheme, darkTheme } from '@/themes';
 import { UIProvider } from '@/context/ui';
+import { EntriesProvider } from '@/context/entries';
 
 
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <UIProvider>
-      <ThemeProvider theme={darkTheme}>
-        <CssBaseline />
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </UIProvider>
+    <EntriesProvider>
+      <UIProvider>
+        <ThemeProvider theme={darkTheme}>
+          <CssBaseline />
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </UIProvider>
+    </EntriesProvider>
+    
     
   
   );

@@ -1,37 +1,58 @@
-import { FC, PropsWithChildren, useReducer } from 'react';
-import { UIContext, uiReducer } from '.';
+import { FC, PropsWithChildren, useReducer } from "react";
+import { UIContext, uiReducer } from ".";
 
 export interface UIState {
-   sidemenuOpen: boolean;
+  sidemenuOpen: boolean;
+  isAddingEntry: boolean;
+  isDragging: boolean;
 }
 
 const UI_INITIAL_STATE: UIState = {
-   sidemenuOpen: false,
-}
+  sidemenuOpen: false,
+  isAddingEntry: false,
+  isDragging: false,
+};
 
 interface Props extends PropsWithChildren {}
 
-export const UIProvider:FC<Props> = ({children}) => {
+export const UIProvider: FC<Props> = ({ children }) => {
+  const [state, dispatch] = useReducer(uiReducer, UI_INITIAL_STATE);
 
-   const [state, dispatch] = useReducer(uiReducer, UI_INITIAL_STATE);
+  const openSideMenu = () => {
+    dispatch({ type: "UI - Open Sidebar" });
+  };
 
-   const openSideMenu = () => {
-    dispatch({type: 'UI - Open Sidebar'});
-   }
+  const closeSideMenu = () => {
+    dispatch({ type: "UI - Close Sidebar" });
+  };
 
-   const closeSideMenu = () => {
-    dispatch({type: 'UI - Close Sidebar'});
-   }
+  const setIsAddingEntry = (isAdding: boolean) => {
+    dispatch({ type: "UI - Set isAddingEntry", payload: isAdding });
+  };
 
-   return (
-       <UIContext.Provider value={{
-           ...state,
+  const startDragging = () => {
+    dispatch({ type: "UI - Start Dragging" });
+  };
 
-           //Methods
-           openSideMenu,
-           closeSideMenu,
-       }}>
-           { children }
-       </UIContext.Provider>
-   )
-}
+  const endDragging = () => {
+    dispatch({ type: "UI - End Dragging" });
+  };
+
+  return (
+    <UIContext.Provider
+      value={{
+        ...state,
+
+        //Methods
+        openSideMenu,
+        closeSideMenu,
+
+        setIsAddingEntry,
+        startDragging,
+        endDragging,
+      }}
+    >
+      {children}
+    </UIContext.Provider>
+  );
+};
