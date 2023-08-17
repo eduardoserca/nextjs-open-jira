@@ -38,7 +38,7 @@ export const uiReducer = (state:UIState, action:UIActionType):UIState => {
             isDragging: false,
         }                 
 
-       default:
-           return state;
-   }
+    default:
+        return state;
+    }
 }
