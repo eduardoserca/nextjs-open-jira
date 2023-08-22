@@ -1,17 +1,19 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import mongoose from 'mongoose';
 import { db } from '@/database';
 import { Entry, IEntry } from '@/models';
+import { isValidObjectIdMongo } from "@/util";
+import { entryService } from "@/service";
 
 
 type Data = 
     |{message: string}
     |IEntry
+    
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     const {id} = req.query;
 
-    if( !mongoose.isValidObjectId( id )){
+    if( !isValidObjectIdMongo( id as string )){
         return res.status(400).json({message: 'El id no es valido ' + id });
     }
 
@@ -28,17 +30,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
 
 const getEntryById = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     const {id} = req.query;
-
-    await db.connect();
-    const entry = await Entry.findById(id);
-
-    if( !entry ){
-        await db.disconnect();
-        return res.status(400).json({message: 'No hay entrada con es ID: ' + id})
-    }
-
-    await db.disconnect();
-    return res.status(200).json(entry);
+    const entry  = await entryService.getEntryById(id as string);    
+    return res.status(200).json(entry as IEntry); 
 }
 
 const updateEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
